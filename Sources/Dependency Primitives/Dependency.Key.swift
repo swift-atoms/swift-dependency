@@ -10,6 +10,8 @@
 //
 // ===----------------------------------------------------------------------===//
 
+public import Witness_Primitives
+
 extension Dependency {
     /// A key for dependency injection with live/test variants.
     ///
@@ -50,9 +52,9 @@ extension Dependency {
     ///     // Uses .custom here
     /// }
     /// ```
-    public protocol Key: Sendable {
+    public protocol Key: Sendable, Witness.`Protocol` {
         /// The value type this key provides.
-        associatedtype Value: Sendable
+        associatedtype Value: ~Copyable & Sendable
 
         /// The default value for production use.
         static var liveValue: Value { get }
@@ -62,7 +64,7 @@ extension Dependency {
     }
 }
 
-extension Dependency.Key {
+extension Dependency.Key where Value: Copyable {
     /// Default implementation returns the live value.
     ///
     /// Override this in your key type to provide test-specific
@@ -70,7 +72,12 @@ extension Dependency.Key {
     public static var testValue: Value { liveValue }
 }
 
-/// Workaround for macro conformance limitations.
-///
-/// Use `Dependency.Key` in all other contexts.
+// swiftlint:disable:next workaround_marker_present
+// WORKAROUND: Top-level typealias so macros can generate `__DependencyKey` conformances
+// WHY: Swift macros cannot yet reference nested protocol types (`Dependency.Key`) in
+//   generated conformance clauses
+// WHEN TO REMOVE: When macro-generated code can reference nested protocols directly
+// TRACKING: https://github.com/swiftlang/swift/issues/66450
+
+/// Top-level alias for ``Dependency/Key`` enabling macro-generated conformances to name the protocol.
 public typealias __DependencyKey = Dependency.Key

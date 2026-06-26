@@ -11,6 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 import Testing
+
 @testable import Dependency_Primitives
 
 // MARK: - Test Fixtures
@@ -32,14 +33,14 @@ private struct StringKey: Dependency.Key {
 @Suite("Dependency.Scope")
 struct DependencyScopeTests {
 
-    @Test("default current returns liveValue")
-    func defaultCurrentReturnsLiveValue() {
+    @Test
+    func `default current returns liveValue`() {
         let value = Dependency.Scope.current[CounterKey.self]
         #expect(value == 0)
     }
 
-    @Test("with scope sets value")
-    func withScopeSetsValue() {
+    @Test
+    func `with scope sets value`() {
         let result = Dependency.Scope.with { values in
             values[CounterKey.self] = 42
         } operation: {
@@ -49,8 +50,8 @@ struct DependencyScopeTests {
         #expect(result == 42)
     }
 
-    @Test("nested scopes override correctly")
-    func nestedScopesOverride() {
+    @Test
+    func `nested scopes override correctly`() {
         var values: [Int] = []
 
         Dependency.Scope.with { v in
@@ -70,8 +71,8 @@ struct DependencyScopeTests {
         #expect(values == [1, 2, 1])
     }
 
-    @Test("multiple keys in same scope")
-    func multipleKeysInScope() {
+    @Test
+    func `multiple keys in same scope`() {
         let result = Dependency.Scope.with { values in
             values[CounterKey.self] = 100
             values[StringKey.self] = "custom"
@@ -86,8 +87,8 @@ struct DependencyScopeTests {
         #expect(result.string == "custom")
     }
 
-    @Test("async with scope works")
-    func asyncWithScopeWorks() async {
+    @Test
+    func `async with scope works`() async {
         let result = await Dependency.Scope.with { values in
             values[CounterKey.self] = 50
         } operation: {
@@ -98,12 +99,13 @@ struct DependencyScopeTests {
         #expect(result == 50)
     }
 
-    @Test("throwing operation propagates error")
-    func throwingOperationPropagatesError() {
-        struct TestError: Error {}
+    @Test
+    func `throwing operation propagates error`() {
+        struct TestError: Swift.Error {}
 
         do {
-            try Dependency.Scope.with { _ in } operation: {
+            try Dependency.Scope.with { _ in
+            } operation: {
                 throw TestError()
             }
             Issue.record("Expected error to be thrown")
@@ -112,12 +114,13 @@ struct DependencyScopeTests {
         }
     }
 
-    @Test("async throwing operation propagates error")
-    func asyncThrowingOperationPropagatesError() async {
-        struct TestError: Error {}
+    @Test
+    func `async throwing operation propagates error`() async {
+        struct TestError: Swift.Error {}
 
         do {
-            try await Dependency.Scope.with { _ in } operation: {
+            try await Dependency.Scope.with { _ in
+            } operation: {
                 throw TestError()
             }
             Issue.record("Expected error to be thrown")
@@ -126,8 +129,8 @@ struct DependencyScopeTests {
         }
     }
 
-    @Test("scope inherits parent values")
-    func scopeInheritsParentValues() {
+    @Test
+    func `scope inherits parent values`() {
         let result = Dependency.Scope.with { values in
             values[CounterKey.self] = 10
             values[StringKey.self] = "parent"
@@ -147,8 +150,8 @@ struct DependencyScopeTests {
         #expect(result.string == "parent")
     }
 
-    @Test("value outside scope returns to default")
-    func valueOutsideScopeReturnsToDefault() {
+    @Test
+    func `value outside scope returns to default`() {
         Dependency.Scope.with { values in
             values[CounterKey.self] = 999
         } operation: {

@@ -33,6 +33,9 @@ extension Dependency {
     /// `Values` is `Sendable` and safe to use across isolation domains.
     /// The storage is copy-on-write and uses value semantics.
     public struct Values: Sendable {
+        // Heterogeneous dependency storage: each key type maps to its own `Value`,
+        // so the erased element type is load-bearing and cannot be a single generic.
+        // swiftlint:disable:next no_any_protocol_existential
         private var storage: [ObjectIdentifier: any Sendable] = [:]
         private var _isTestContext: Bool = false
 
@@ -52,7 +55,7 @@ extension Dependency {
         ///
         /// - Parameter key: The key type to look up.
         /// - Returns: The registered value, or the default value if not registered.
-        public subscript<K: Dependency.Key>(key: K.Type) -> K.Value {
+        public subscript<K: Dependency.Key>(key: K.Type) -> K.Value where K.Value: Copyable {
             get {
                 if let value = storage[ObjectIdentifier(key)] as? K.Value {
                     return value

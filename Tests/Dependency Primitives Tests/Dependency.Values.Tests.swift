@@ -11,6 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 import Testing
+
 @testable import Dependency_Primitives
 
 // MARK: - Test Fixtures
@@ -37,15 +38,15 @@ private struct NoTestValueKey: Dependency.Key {
 @Suite("Dependency.Values")
 struct DependencyValuesTests {
 
-    @Test("empty values returns liveValue for unregistered key")
-    func emptyReturnsLiveValue() {
+    @Test
+    func `empty values returns liveValue for unregistered key`() {
         let values = Dependency.Values()
         #expect(values[CounterKey.self] == 0)
         #expect(values[StringKey.self] == "live")
     }
 
-    @Test("subscript get/set works correctly")
-    func subscriptGetSet() {
+    @Test
+    func `subscript get/set works correctly`() {
         var values = Dependency.Values()
 
         #expect(values[CounterKey.self] == 0)
@@ -57,8 +58,8 @@ struct DependencyValuesTests {
         #expect(values[CounterKey.self] == 456)
     }
 
-    @Test("multiple keys can be stored independently")
-    func multipleKeysIndependent() {
+    @Test
+    func `multiple keys can be stored independently`() {
         var values = Dependency.Values()
 
         values[CounterKey.self] = 100
@@ -68,8 +69,8 @@ struct DependencyValuesTests {
         #expect(values[StringKey.self] == "custom")
     }
 
-    @Test("isTestContext returns testValue when true")
-    func testContextReturnsTestValue() {
+    @Test
+    func `isTestContext returns testValue when true`() {
         var values = Dependency.Values()
         values.isTestContext = true
 
@@ -77,8 +78,8 @@ struct DependencyValuesTests {
         #expect(values[StringKey.self] == "test")
     }
 
-    @Test("isTestContext false returns liveValue")
-    func liveContextReturnsLiveValue() {
+    @Test
+    func `isTestContext false returns liveValue`() {
         var values = Dependency.Values()
         values.isTestContext = false
 
@@ -86,24 +87,24 @@ struct DependencyValuesTests {
         #expect(values[StringKey.self] == "live")
     }
 
-    @Test("forTesting factory sets isTestContext")
-    func forTestingFactory() {
+    @Test
+    func `forTesting factory sets isTestContext`() {
         let values = Dependency.Values.forTesting()
 
         #expect(values[CounterKey.self] == 999)
         #expect(values.isTestContext)
     }
 
-    @Test("explicit value overrides test/live defaults")
-    func explicitValueOverridesDefaults() {
+    @Test
+    func `explicit value overrides test/live defaults`() {
         var values = Dependency.Values.forTesting()
         values[CounterKey.self] = 42
 
         #expect(values[CounterKey.self] == 42)
     }
 
-    @Test("testValue defaults to liveValue when not overridden")
-    func testValueDefaultsToLive() {
+    @Test
+    func `testValue defaults to liveValue when not overridden`() {
         var values = Dependency.Values.forTesting()
 
         #expect(values[NoTestValueKey.self] == "default-live")

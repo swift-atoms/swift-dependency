@@ -11,6 +11,7 @@
 // ===----------------------------------------------------------------------===//
 
 import Testing
+
 @testable import Dependency_Primitives
 
 // MARK: - Test Fixtures
@@ -38,20 +39,20 @@ private struct DefaultTestValueKey: Dependency.Key {
 @Suite("Dependency.Key")
 struct DependencyKeyTests {
 
-    @Test("liveValue is accessible")
-    func liveValueAccessible() {
+    @Test
+    func `liveValue is accessible`() {
         #expect(IntKey.liveValue == 42)
         #expect(StringKey.liveValue == "live")
     }
 
-    @Test("testValue is accessible")
-    func testValueAccessible() {
+    @Test
+    func `testValue is accessible`() {
         #expect(IntKey.testValue == 999)
         #expect(StringKey.testValue == "test")
     }
 
-    @Test("testValue defaults to liveValue when not overridden")
-    func testValueDefaultsToLive() {
+    @Test
+    func `testValue defaults to liveValue when not overridden`() {
         #expect(DefaultTestValueKey.testValue == "only-live")
         #expect(DefaultTestValueKey.testValue == DefaultTestValueKey.liveValue)
     }

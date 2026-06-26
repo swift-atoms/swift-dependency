@@ -53,7 +53,7 @@ extension Dependency {
     public struct Scope: Sendable {
         /// Task-local storage for the current scope.
         @TaskLocal
-        private static var _current: Scope = Scope(values: Values())
+        private static var _current: Scope = Self(values: Values())
 
         /// The registered values in this scope.
         public var values: Values
@@ -90,19 +90,25 @@ extension Dependency.Scope {
     ///   - operation: The operation to execute with the modified values.
     /// - Returns: The result of the operation.
     /// - Throws: The typed error from the operation.
-    public static func with<T, E: Error>(
+    public static func with<T, E: Swift.Error>(
         _ modify: (inout Dependency.Values) -> Void,
         operation: () throws(E) -> T
     ) throws(E) -> T {
         var scope = _current
         modify(&scope.values)
-        let result: Result<T, E> = $_current.withValue(scope) {
-            do throws(E) {
-                return .success(try operation())
-            } catch {
-                return .failure(error)
+        // Result-wrapping workaround: stdlib's TaskLocal.withValue rethrows erases
+        // typed error info. When FullTypedThrows (AvailableInProd) lands, replace
+        // with: return try $_current.withValue(scope, operation: operation)
+        let result: Result<T, E> = $_current.withValue(
+            scope,
+            operation: {
+                do throws(E) {
+                    return .success(try operation())
+                } catch {
+                    return .failure(error)
+                }
             }
-        }
+        )
         return try result.get()
     }
 
@@ -136,34 +142,42 @@ extension Dependency.Scope {
     ///   - operation: The async operation to execute with the modified values.
     /// - Returns: The result of the operation.
     /// - Throws: The typed error from the operation.
-    public static func with<T, E: Error>(
-        _ modify: (inout Dependency.Values) -> Void,
-        operation: () async throws(E) -> T
-    ) async throws(E) -> T {
+    nonisolated(nonsending)
+        public static func with<T, E: Swift.Error>(
+            _ modify: (inout Dependency.Values) -> Void,
+            operation: nonisolated(nonsending) () async throws(E) -> T
+        ) async throws(E) -> T
+    {
         var scope = _current
         modify(&scope.values)
-        let result: Result<T, E> = await $_current.withValue(scope) {
-            do throws(E) {
-                return .success(try await operation())
-            } catch {
-                return .failure(error)
+        // Result-wrapping workaround: stdlib's TaskLocal.withValue rethrows erases
+        // typed error info. When FullTypedThrows (AvailableInProd) lands, replace
+        // with: return try await $_current.withValue(scope, operation: operation)
+        let result: Result<T, E> = await $_current.withValue(
+            scope,
+            operation: {
+                do throws(E) {
+                    return .success(try await operation())
+                } catch {
+                    return .failure(error)
+                }
             }
-        }
+        )
         return try result.get()
     }
-
-    /// Executes an async closure with modified values (non-throwing).
-    ///
-    /// - Parameters:
-    ///   - modify: A closure that modifies the values for the scope.
-    ///   - operation: The async operation to execute with the modified values.
-    /// - Returns: The result of the operation.
-    public static func with<T>(
-        _ modify: (inout Dependency.Values) -> Void,
-        operation: () async -> T
-    ) async -> T {
-        var scope = _current
-        modify(&scope.values)
-        return await $_current.withValue(scope, operation: operation)
-    }
+    //
+    //    /// Executes an async closure with modified values (non-throwing).
+    //    ///
+    //    /// - Parameters:
+    //    ///   - modify: A closure that modifies the values for the scope.
+    //    ///   - operation: The async operation to execute with the modified values.
+    //    /// - Returns: The result of the operation.
+    //    public static func with<T>(
+    //        _ modify: (inout Dependency.Values) -> Void,
+    //        operation: () async -> T
+    //    ) async -> T {
+    //        var scope = _current
+    //        modify(&scope.values)
+    //        return await $_current.withValue(scope, operation: operation)
+    //    }
 }
