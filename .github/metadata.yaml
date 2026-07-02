@@ -1,6 +1,6 @@
 # .github/metadata.yaml
 # Triaged by AI-assisted bulk pass (2026-04-29).
-description: "Dependency types for Swift."
+description: "Typed dependency-injection keys with live and test values and task-local scoped resolution for Swift."
 topics:
   - primitives
   - dependency
