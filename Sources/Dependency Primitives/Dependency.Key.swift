@@ -72,7 +72,6 @@ extension Dependency.Key where Value: Copyable {
     public static var testValue: Value { liveValue }
 }
 
-// swiftlint:disable:next workaround_marker_present
 // WORKAROUND: Top-level typealias so macros can generate `__DependencyKey` conformances
 // WHY: Swift macros cannot yet reference nested protocol types (`Dependency.Key`) in
 //   generated conformance clauses
