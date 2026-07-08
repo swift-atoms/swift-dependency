@@ -41,30 +41,34 @@ extension Dependency {
 
         /// Creates an empty values container.
         public init() {}
+    }
+}
 
-        /// Whether this context is configured for testing.
-        ///
-        /// When `true`, unregistered keys return their `testValue`
-        /// instead of `liveValue`.
-        public var isTestContext: Bool {
-            get { _isTestContext }
-            set { _isTestContext = newValue }
+// MARK: - Access
+
+extension Dependency.Values {
+    /// Whether this context is configured for testing.
+    ///
+    /// When `true`, unregistered keys return their `testValue`
+    /// instead of `liveValue`.
+    public var isTestContext: Bool {
+        get { _isTestContext }
+        set { _isTestContext = newValue }
+    }
+
+    /// Access a dependency by its key type.
+    ///
+    /// - Parameter key: The key type to look up.
+    /// - Returns: The registered value, or the default value if not registered.
+    public subscript<K: Dependency.Key>(key: K.Type) -> K.Value where K.Value: Copyable {
+        get {
+            if let value = storage[ObjectIdentifier(key)] as? K.Value {
+                return value
+            }
+            return _isTestContext ? K.testValue : K.liveValue
         }
-
-        /// Access a dependency by its key type.
-        ///
-        /// - Parameter key: The key type to look up.
-        /// - Returns: The registered value, or the default value if not registered.
-        public subscript<K: Dependency.Key>(key: K.Type) -> K.Value where K.Value: Copyable {
-            get {
-                if let value = storage[ObjectIdentifier(key)] as? K.Value {
-                    return value
-                }
-                return _isTestContext ? K.testValue : K.liveValue
-            }
-            set {
-                storage[ObjectIdentifier(key)] = newValue
-            }
+        set {
+            storage[ObjectIdentifier(key)] = newValue
         }
     }
 }

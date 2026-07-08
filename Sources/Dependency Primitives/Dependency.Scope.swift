@@ -51,10 +51,6 @@ extension Dependency {
     /// let client = Dependency.Scope.current[APIClient.self]
     /// ```
     public struct Scope: Sendable {
-        /// Task-local storage for the current scope.
-        @TaskLocal
-        private static var _current: Scope = Self(values: Values())
-
         /// The registered values in this scope.
         public var values: Values
 
@@ -62,6 +58,14 @@ extension Dependency {
             self.values = values
         }
     }
+}
+
+// MARK: - Task-Local Storage
+
+extension Dependency.Scope {
+    /// Task-local storage for the current scope.
+    @TaskLocal
+    private static var _current: Dependency.Scope = Self(values: Dependency.Values())
 }
 
 // MARK: - Current Access
