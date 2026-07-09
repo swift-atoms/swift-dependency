@@ -42,8 +42,7 @@ extension DefaultTestValueKey {
 
 // MARK: - Tests
 
-@Suite("Dependency.Key")
-struct DependencyKeyTests {
+@Suite struct `Dependency.Key Tests` {
 
     @Test
     func `liveValue is accessible`() {
