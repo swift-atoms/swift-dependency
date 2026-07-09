@@ -16,19 +16,25 @@ import Testing
 
 // MARK: - Test Fixtures
 
-private struct IntKey: Dependency.Key {
+private struct IntKey: Dependency.Key {}
+
+extension IntKey {
     typealias Value = Int
     static var liveValue: Int { 42 }
     static var testValue: Int { 999 }
 }
 
-private struct StringKey: Dependency.Key {
+private struct StringKey: Dependency.Key {}
+
+extension StringKey {
     typealias Value = String
     static var liveValue: String { "live" }
     static var testValue: String { "test" }
 }
 
-private struct DefaultTestValueKey: Dependency.Key {
+private struct DefaultTestValueKey: Dependency.Key {}
+
+extension DefaultTestValueKey {
     typealias Value = String
     static var liveValue: String { "only-live" }
     // testValue defaults to liveValue

@@ -16,13 +16,17 @@ import Testing
 
 // MARK: - Test Fixtures
 
-private struct CounterKey: Dependency.Key {
+private struct CounterKey: Dependency.Key {}
+
+extension CounterKey {
     typealias Value = Int
     static var liveValue: Int { 0 }
     static var testValue: Int { 999 }
 }
 
-private struct StringKey: Dependency.Key {
+private struct StringKey: Dependency.Key {}
+
+extension StringKey {
     typealias Value = String
     static var liveValue: String { "live" }
     static var testValue: String { "test" }
