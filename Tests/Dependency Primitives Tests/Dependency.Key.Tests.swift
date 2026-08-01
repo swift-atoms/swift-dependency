@@ -43,7 +43,12 @@ extension DefaultTestValueKey {
 // MARK: - Tests
 
 @Suite struct `Dependency.Key Tests` {
+    @Suite struct Unit {}
+    @Suite struct `Edge Case` {}
+    @Suite struct Integration {}
+}
 
+extension `Dependency.Key Tests`.Unit {
     @Test
     func `liveValue is accessible`() {
         #expect(IntKey.liveValue == 42)

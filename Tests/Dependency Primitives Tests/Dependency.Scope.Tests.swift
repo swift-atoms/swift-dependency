@@ -106,31 +106,39 @@ extension Dependency.Scope {
 
         @Test
         func `throwing operation propagates error`() {
-            struct TestError: Swift.Error {}
+            struct Failure: Swift.Error {}
 
+            // swift-linter:disable:next do throws for typed catch
+            // REASON: `Dependency.Scope.with` overload resolution does not narrow the
+            // typed-throws `E` here (a known typed-throws inference limitation across
+            // the modify/operation closure pair), so `do throws(Failure)` fails to typecheck.
             do {
                 try Dependency.Scope.with { _ in
                 } operation: {
-                    throw TestError()
+                    throw Failure()
                 }
                 Issue.record("Expected error to be thrown")
             } catch {
-                #expect(error is TestError)
+                #expect(error is Failure)
             }
         }
 
         @Test
         func `async throwing operation propagates error`() async {
-            struct TestError: Swift.Error {}
+            struct Failure: Swift.Error {}
 
+            // swift-linter:disable:next do throws for typed catch
+            // REASON: async `Dependency.Scope.with` overload resolution does not narrow
+            // the typed-throws `E` here (a known typed-throws inference limitation), so
+            // `do throws(Failure)` fails to typecheck though the sync overload above accepts it.
             do {
                 try await Dependency.Scope.with { _ in
                 } operation: {
-                    throw TestError()
+                    throw Failure()
                 }
                 Issue.record("Expected error to be thrown")
             } catch {
-                #expect(error is TestError)
+                #expect(error is Failure)
             }
         }
 
