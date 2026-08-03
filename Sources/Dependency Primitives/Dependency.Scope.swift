@@ -53,10 +53,6 @@ extension Dependency {
     public struct Scope: Sendable {
         /// The registered values in this scope.
         public var values: Values
-
-        internal init(values: Values) {
-            self.values = values
-        }
     }
 }
 
