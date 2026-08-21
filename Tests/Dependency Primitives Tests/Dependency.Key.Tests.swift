@@ -1,20 +1,6 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-primitives open source project
-//
-// Copyright (c) 2024-2025 Coen ten Thije Boonkkamp and the swift-primitives
-// project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
 import Testing
 
 @testable import Dependency_Primitives
-
-// MARK: - Test Fixtures
 
 private struct IntKey: Dependency.Key {}
 
@@ -37,10 +23,8 @@ private struct DefaultTestValueKey: Dependency.Key {}
 extension DefaultTestValueKey {
     typealias Value = String
     static var liveValue: String { "only-live" }
-    // testValue defaults to liveValue
-}
 
-// MARK: - Tests
+}
 
 @Suite struct `Dependency.Key Tests` {
     @Suite struct Unit {}

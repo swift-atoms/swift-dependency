@@ -1,20 +1,6 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-primitives open source project
-//
-// Copyright (c) 2024-2025 Coen ten Thije Boonkkamp and the swift-primitives
-// project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
 import Testing
 
 @testable import Dependency_Primitives
-
-// MARK: - Test Fixtures
 
 private struct CounterKey: Dependency.Key {}
 
@@ -31,8 +17,6 @@ extension StringKey {
     static var liveValue: String { "live" }
     static var testValue: String { "test" }
 }
-
-// MARK: - Tests
 
 extension Dependency.Scope {
     @Suite("Dependency.Scope")
@@ -108,10 +92,6 @@ extension Dependency.Scope {
         func `throwing operation propagates error`() {
             struct Failure: Swift.Error {}
 
-            // swift-linter:disable:next do throws for typed catch
-            // REASON: `Dependency.Scope.with` overload resolution does not narrow the
-            // typed-throws `E` here (a known typed-throws inference limitation across
-            // the modify/operation closure pair), so `do throws(Failure)` fails to typecheck.
             do {
                 try Dependency.Scope.with { _ in
                 } operation: {
@@ -127,10 +107,6 @@ extension Dependency.Scope {
         func `async throwing operation propagates error`() async {
             struct Failure: Swift.Error {}
 
-            // swift-linter:disable:next do throws for typed catch
-            // REASON: async `Dependency.Scope.with` overload resolution does not narrow
-            // the typed-throws `E` here (a known typed-throws inference limitation), so
-            // `do throws(Failure)` fails to typecheck though the sync overload above accepts it.
             do {
                 try await Dependency.Scope.with { _ in
                 } operation: {
@@ -150,7 +126,7 @@ extension Dependency.Scope {
             } operation: {
                 Dependency.Scope.with { values in
                     values[CounterKey.self] = 20
-                    // StringKey not overridden
+
                 } operation: {
                     (
                         counter: Dependency.Scope.current[CounterKey.self],

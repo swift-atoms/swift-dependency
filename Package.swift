@@ -22,18 +22,14 @@ let package = Package(
             url: "https://github.com/swift-primitives/swift-witness-primitives.git",
             branch: "main"
         )
-        // SDG(operates-on): DI operates on property wrapper patterns (@Dependency, @Environment)
-        // .package(url: "https://github.com/swift-primitives/swift-property-primitives.git", branch: "main"),
-        // SDG(operates-on): DI operates on lens/prism patterns for nested value access
-        // .package(url: "https://github.com/swift-primitives/swift-optic-primitives.git", branch: "main"),
+
     ],
     targets: [
         .target(
             name: "Dependency Primitives",
             dependencies: [
                 .product(name: "Witness Primitives", package: "swift-witness-primitives")
-                // .product(name: "Property Primitives", package: "swift-property-primitives"),
-                // .product(name: "Optic Primitives", package: "swift-optic-primitives"),
+
             ]
         ),
         .testTarget(

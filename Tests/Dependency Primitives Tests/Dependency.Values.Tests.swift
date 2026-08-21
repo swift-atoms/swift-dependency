@@ -1,20 +1,6 @@
-// ===----------------------------------------------------------------------===//
-//
-// This source file is part of the swift-primitives open source project
-//
-// Copyright (c) 2024-2025 Coen ten Thije Boonkkamp and the swift-primitives
-// project authors
-// Licensed under Apache License v2.0
-//
-// See LICENSE for license information
-//
-// ===----------------------------------------------------------------------===//
-
 import Testing
 
 @testable import Dependency_Primitives
-
-// MARK: - Test Fixtures
 
 private struct CounterKey: Dependency.Key {}
 
@@ -38,8 +24,6 @@ extension NoTestValueKey {
     typealias Value = String
     static var liveValue: String { "default-live" }
 }
-
-// MARK: - Tests
 
 extension Dependency.Values {
     @Suite("Dependency.Values")
