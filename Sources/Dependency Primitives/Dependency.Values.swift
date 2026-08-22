@@ -16,7 +16,8 @@ extension Dependency.Values {
         set { _isTestContext = newValue }
     }
 
-    public subscript<K: Dependency.Key>(key: K.Type) -> K.Value where K.Value: Copyable {
+    public subscript<K: Dependency.Key>(key: K.Type) -> K.Value
+    where K.Value: Copyable & Escapable {
         get {
             if let value = storage[ObjectIdentifier(key)] as? K.Value {
                 return value

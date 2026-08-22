@@ -4,7 +4,7 @@ extension Dependency {
 
     public protocol Key: Sendable, Witness.`Protocol` {
 
-        associatedtype Value: ~Copyable & Sendable
+        associatedtype Value: ~Copyable & ~Escapable & Sendable
 
         static var liveValue: Value { get }
 
@@ -12,7 +12,7 @@ extension Dependency {
     }
 }
 
-extension Dependency.Key where Value: Copyable {
+extension Dependency.Key where Value: Copyable & Escapable {
 
     public static var testValue: Value { liveValue }
 }
