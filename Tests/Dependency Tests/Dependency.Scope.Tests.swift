@@ -110,6 +110,7 @@ extension Dependency.Scope {
             do {
                 try await Dependency.Scope.with { _ in
                 } operation: {
+                    await Task.yield()
                     throw Failure()
                 }
                 Issue.record("Expected error to be thrown")
