@@ -15,21 +15,38 @@ let package = Package(
         .library(
             name: "Dependency",
             targets: ["Dependency"]
-        )
+        ),
+        .library(
+            name: "Dependency Standard Library Integration",
+            targets: ["Dependency Standard Library Integration"]
+        ),
+        .library(
+            name: "Dependency Apple Foundation Integration",
+            targets: ["Dependency Apple Foundation Integration"]
+        ),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-molecules/swift-witness.git",
+            url: "https://github.com/swift-atoms/swift-witness.git",
             branch: "main"
         )
-
     ],
     targets: [
         .target(
             name: "Dependency",
             dependencies: [
                 .product(name: "Witness", package: "swift-witness")
-
+            ]
+        ),
+        .target(
+            name: "Dependency Standard Library Integration",
+            dependencies: ["Dependency"]
+        ),
+        .target(
+            name: "Dependency Apple Foundation Integration",
+            dependencies: [
+                "Dependency",
+                "Dependency Standard Library Integration",
             ]
         ),
         .testTarget(
