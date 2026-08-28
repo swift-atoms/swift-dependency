@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-molecules/swift-witness.git",
+            url: "https://github.com/swift-atoms/swift-witness.git",
             branch: "main"
         )
 
@@ -35,7 +35,7 @@ let package = Package(
         .testTarget(
             name: "Dependency Tests",
             dependencies: [
-                "Dependency"
+                .target(name: "Dependency")
             ]
         ),
     ],

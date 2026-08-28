@@ -52,7 +52,7 @@ values.isTestContext      // true
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-molecules/swift-dependency.git", branch: "main")
+    .package(url: "https://github.com/swift-atoms/swift-dependency.git", branch: "main")
 ]
 ```
 
