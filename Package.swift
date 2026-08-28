@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-dependency-primitives",
+    name: "swift-dependency",
     platforms: [
         .macOS(.v27),
         .iOS(.v27),
@@ -13,29 +13,29 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "Dependency Primitives",
-            targets: ["Dependency Primitives"]
+            name: "Dependency",
+            targets: ["Dependency"]
         )
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-primitives/swift-witness-primitives.git",
+            url: "https://github.com/swift-atoms/swift-witness.git",
             branch: "main"
         )
 
     ],
     targets: [
         .target(
-            name: "Dependency Primitives",
+            name: "Dependency",
             dependencies: [
-                .product(name: "Witness Primitives", package: "swift-witness-primitives")
+                .product(name: "Witness", package: "swift-witness")
 
             ]
         ),
         .testTarget(
-            name: "Dependency Primitives Tests",
+            name: "Dependency Tests",
             dependencies: [
-                "Dependency Primitives"
+                .target(name: "Dependency")
             ]
         ),
     ],

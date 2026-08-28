@@ -1,4 +1,4 @@
-public import Witness_Primitives
+public import Witness
 
 extension Dependency {
 

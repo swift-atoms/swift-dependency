@@ -1,4 +1,4 @@
-# Dependency Primitives
+# Dependency
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
@@ -11,7 +11,7 @@ Dependency-injection primitives for Swift — a `Dependency` namespace of typed 
 `Dependency` is the vocabulary for type-safe dependency injection: a key type *names* a dependency and supplies a `liveValue` (production) and a `testValue` (tests); `Dependency.Values` holds overrides keyed by those types; `Dependency.Scope` installs them into task-local storage for the duration of an operation. No global singletons, no service locator — resolution is explicit, typed, and scoped.
 
 ```swift
-import Dependency_Primitives
+import Dependency
 
 // Declare a dependency by conforming a key type to `Dependency.Key`.
 // `liveValue` is used in production; `testValue` in test contexts.
@@ -37,7 +37,7 @@ Scopes nest: an inner `with` overrides only the keys it touches and the parent's
 A values container can also be flipped into a *test context*, where unregistered keys resolve to `testValue` instead of `liveValue`:
 
 ```swift
-import Dependency_Primitives
+import Dependency
 
 var values = Dependency.Values.forTesting()
 values[APIBaseURL.self]   // "https://stub.local" — the testValue
@@ -52,7 +52,7 @@ values.isTestContext      // true
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-primitives/swift-dependency-primitives.git", branch: "main")
+    .package(url: "https://github.com/swift-atoms/swift-dependency.git", branch: "main")
 ]
 ```
 
@@ -60,7 +60,7 @@ dependencies: [
 .target(
     name: "App",
     dependencies: [
-        .product(name: "Dependency Primitives", package: "swift-dependency-primitives"),
+        .product(name: "Dependency", package: "swift-dependency"),
     ]
 )
 ```
@@ -75,7 +75,7 @@ One library product. Depends only on the `Witness` primitive — `Dependency.Key
 
 | Product | Target | Purpose |
 |---------|--------|---------|
-| `Dependency Primitives` | `Sources/Dependency Primitives/` | The `Dependency` namespace: `Dependency.Key` (typed keys with `liveValue` / `testValue` variants), `Dependency.Values` (type-safe heterogeneous storage with value semantics), and `Dependency.Scope` (task-local scoped resolution in synchronous, typed-throwing, and `async` forms). |
+| `Dependency` | `Sources/Dependency/` | The `Dependency` namespace: `Dependency.Key` (typed keys with `liveValue` / `testValue` variants), `Dependency.Values` (type-safe heterogeneous storage with value semantics), and `Dependency.Scope` (task-local scoped resolution in synchronous, typed-throwing, and `async` forms). |
 
 Foundation-free.
 

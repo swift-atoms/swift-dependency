@@ -1,6 +1,6 @@
 import Testing
 
-@testable import Dependency_Primitives
+@testable import Dependency
 
 private struct IntKey: Dependency.Key {}
 
