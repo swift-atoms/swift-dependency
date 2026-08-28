@@ -96,7 +96,7 @@ extension Dependency.Values {
 
         @Test
         func `testValue defaults to liveValue when not overridden`() {
-            let values = Dependency.Values.forTesting()
+            var values = Dependency.Values.forTesting()
 
             #expect(values[NoTestValueKey.self] == "default-live")
         }
