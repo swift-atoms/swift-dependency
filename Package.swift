@@ -13,8 +13,8 @@ let package = Package(
     ],
     products: [
         .library(name: "Dependency", targets: ["Dependency"]),
-        .library(name: "Dependency Standard Library Integration", targets: ["Dependency Standard Library Integration"]),
-        .library(name: "Dependency Foundation Library Integration", targets: ["Dependency Foundation Library Integration"]),
+
+        .library(name: "Dependency Foundation Integration", targets: ["Dependency Foundation Integration"]),
         .library(name: "Dependency Test Support", targets: ["Dependency Test Support"]),
     ],
     dependencies: [
@@ -32,20 +32,13 @@ let package = Package(
             ],
             path: "Sources/Dependency"
         ),
+        
         .target(
-            name: "Dependency Standard Library Integration",
+            name: "Dependency Foundation Integration",
             dependencies: [
                 .target(name: "Dependency"),
             ],
-            path: "Sources/Dependency Standard Library Integration"
-        ),
-        .target(
-            name: "Dependency Foundation Library Integration",
-            dependencies: [
-                .target(name: "Dependency"),
-                .target(name: "Dependency Standard Library Integration"),
-            ],
-            path: "Sources/Dependency Foundation Library Integration"
+            path: "Sources/Dependency Foundation Integration"
         ),
         .target(
             name: "Dependency Test Support",
@@ -59,8 +52,7 @@ let package = Package(
             dependencies: [
                 .target(name: "Dependency"),
                 .target(name: "Dependency Test Support"),
-                .target(name: "Dependency Standard Library Integration"),
-                .target(name: "Dependency Foundation Library Integration"),
+                .target(name: "Dependency Foundation Integration"),
             ],
             path: "Tests/Dependency Tests"
         ),
