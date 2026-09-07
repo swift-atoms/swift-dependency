@@ -12,10 +12,10 @@ let package = Package(
         .visionOS(.v27),
     ],
     products: [
-        .library(
-            name: "Dependency",
-            targets: ["Dependency"]
-        )
+        .library(name: "Dependency", targets: ["Dependency"]),
+        .library(name: "Dependency Standard Library Integration", targets: ["Dependency Standard Library Integration"]),
+        .library(name: "Dependency Foundation Library Integration", targets: ["Dependency Foundation Library Integration"]),
+        .library(name: "Dependency Test Support", targets: ["Dependency Test Support"]),
     ],
     dependencies: [
         .package(
@@ -28,22 +28,48 @@ let package = Package(
         .target(
             name: "Dependency",
             dependencies: [
-                .product(name: "Witness", package: "swift-witness")
-
-            ]
+                .product(name: "Witness", package: "swift-witness"),
+            ],
+            path: "Sources/Dependency"
+        ),
+        .target(
+            name: "Dependency Standard Library Integration",
+            dependencies: [
+                .target(name: "Dependency"),
+            ],
+            path: "Sources/Dependency Standard Library Integration"
+        ),
+        .target(
+            name: "Dependency Foundation Library Integration",
+            dependencies: [
+                .target(name: "Dependency"),
+                .target(name: "Dependency Standard Library Integration"),
+            ],
+            path: "Sources/Dependency Foundation Library Integration"
+        ),
+        .target(
+            name: "Dependency Test Support",
+            dependencies: [
+                .target(name: "Dependency"),
+            ],
+            path: "Tests/Support"
         ),
         .testTarget(
             name: "Dependency Tests",
             dependencies: [
-                .target(name: "Dependency")
-            ]
+                .target(name: "Dependency"),
+                .target(name: "Dependency Test Support"),
+                .target(name: "Dependency Standard Library Integration"),
+                .target(name: "Dependency Foundation Library Integration"),
+            ],
+            path: "Tests/Dependency Tests"
         ),
     ],
     swiftLanguageModes: [.v6]
 )
 
-for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
-    let ecosystem: [SwiftSetting] = [
+for target in package.targets {
+    target.swiftSettings = [
         .strictMemorySafety(),
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
@@ -52,8 +78,4 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableExperimentalFeature("Lifetimes"),
         .enableUpcomingFeature("InferIsolatedConformances"),
     ]
-
-    let package: [SwiftSetting] = []
-
-    target.swiftSettings = (target.swiftSettings ?? []) + ecosystem + package
 }
