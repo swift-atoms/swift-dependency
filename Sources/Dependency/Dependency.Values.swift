@@ -19,7 +19,7 @@ extension Dependency.Values {
     public subscript<K: Dependency.Key>(key: K.Type) -> K.Value
     where K.Value: Copyable & Escapable {
         get {
-            if let value = storage[ObjectIdentifier(key)] as? K.Value {
+            if let stored = storage[ObjectIdentifier(key)], let value = stored as? K.Value {
                 return value
             }
             return _isTestContext ? K.testValue : K.liveValue

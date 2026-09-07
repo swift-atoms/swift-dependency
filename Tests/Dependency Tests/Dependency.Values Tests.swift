@@ -1,104 +1,130 @@
+import Dependency
 import Testing
 
-@testable import Dependency
+extension Dependency {
+    @Suite
+    struct `Values preserve explicit overrides` {
+        enum Number: Dependency.Key {
+            static var liveValue: Int { 42 }
+            static var testValue: Int { 999 }
+        }
 
-private struct CounterKey: Dependency.Key {}
+        enum Text: Dependency.Key {
+            static var liveValue: String { "live" }
+            static var testValue: String { "test" }
+        }
 
-extension CounterKey {
-    typealias Value = Int
-    static var liveValue: Int { 0 }
-    static var testValue: Int { 999 }
+        enum OptionalNumber: Dependency.Key {
+            static var liveValue: Int? { 42 }
+            static var testValue: Int? { 999 }
+        }
+
+        enum Numbers: Dependency.Key {
+            static var liveValue: [Int] { [] }
+        }
+
+        final class Client: Sendable {
+            let value: Int
+
+            init(_ value: Int) { self.value = value }
+        }
+
+        enum Service: Dependency.Key {
+            static var liveValue: Client { Client(0) }
+        }
+    }
 }
 
-private struct StringKey: Dependency.Key {}
+extension Dependency.`Values preserve explicit overrides` {
+    @Test
+    func `Empty values use live defaults and the testing factory uses test defaults`() {
+        let live = Dependency.Values()
+        let testing = Dependency.Values.forTesting()
 
-extension StringKey {
-    typealias Value = String
-    static var liveValue: String { "live" }
-    static var testValue: String { "test" }
-}
+        #expect(!live.isTestContext)
+        #expect(live[Self.Number.self] == 42)
+        #expect(live[Self.Text.self] == "live")
+        #expect(testing.isTestContext)
+        #expect(testing[Self.Number.self] == 999)
+        #expect(testing[Self.Text.self] == "test")
+    }
 
-private struct NoTestValueKey: Dependency.Key {}
+    @Test
+    func `Changing context changes defaults while retaining explicit overrides`() {
+        var values = Dependency.Values()
+        values[Self.Number.self] = 7
+        values.isTestContext = true
 
-extension NoTestValueKey {
-    typealias Value = String
-    static var liveValue: String { "default-live" }
-}
+        #expect(values[Self.Number.self] == 7)
+        #expect(values[Self.Text.self] == "test")
 
-extension Dependency.Values {
-    @Suite("Dependency.Values")
-    struct Test {
+        values[Self.Number.self] = 8
+        values.isTestContext = false
+        #expect(values[Self.Number.self] == 8)
+        #expect(values[Self.Text.self] == "live")
+    }
 
-        @Test
-        func `empty values returns liveValue for unregistered key`() {
-            let values = Dependency.Values()
-            #expect(values[CounterKey.self] == 0)
-            #expect(values[StringKey.self] == "live")
-        }
+    @Test(arguments: [false, true])
+    func `An explicit nil overrides a nonnil default in either context`(_ testing: Bool) {
+        var values = Dependency.Values()
+        values.isTestContext = testing
+        #expect(values[Self.OptionalNumber.self] == (testing ? 999 : 42))
 
-        @Test
-        func `subscript get/set works correctly`() {
-            var values = Dependency.Values()
+        values[Self.OptionalNumber.self] = nil
+        #expect(values[Self.OptionalNumber.self] == nil)
+        values.isTestContext.toggle()
+        #expect(values[Self.OptionalNumber.self] == nil)
 
-            #expect(values[CounterKey.self] == 0)
+        values[Self.OptionalNumber.self] = 7
+        #expect(values[Self.OptionalNumber.self] == 7)
+    }
 
-            values[CounterKey.self] = 123
-            #expect(values[CounterKey.self] == 123)
+    @Test
+    func `Copies keep independent stored collections and context flags`() {
+        var original = Dependency.Values()
+        original[Self.Numbers.self] = [1, 2]
+        var copy = original
 
-            values[CounterKey.self] = 456
-            #expect(values[CounterKey.self] == 456)
-        }
+        copy[Self.Numbers.self].append(3)
+        copy.isTestContext = true
+        original[Self.Numbers.self].append(4)
 
-        @Test
-        func `multiple keys can be stored independently`() {
-            var values = Dependency.Values()
+        #expect(original[Self.Numbers.self] == [1, 2, 4])
+        #expect(copy[Self.Numbers.self] == [1, 2, 3])
+        #expect(!original.isTestContext)
+        #expect(copy.isTestContext)
+        #expect(original[Self.Text.self] == "live")
+        #expect(copy[Self.Text.self] == "test")
+    }
 
-            values[CounterKey.self] = 100
-            values[StringKey.self] = "custom"
+    @Test
+    func `A retained snapshot preserves values after the original changes`() {
+        var original = Dependency.Values.forTesting()
+        original[Self.Number.self] = 7
+        let snapshot = original
 
-            #expect(values[CounterKey.self] == 100)
-            #expect(values[StringKey.self] == "custom")
-        }
+        original[Self.Number.self] = 8
+        original.isTestContext = false
 
-        @Test
-        func `isTestContext returns testValue when true`() {
-            var values = Dependency.Values()
-            values.isTestContext = true
+        #expect(snapshot[Self.Number.self] == 7)
+        #expect(snapshot[Self.Text.self] == "test")
+        #expect(original[Self.Number.self] == 8)
+        #expect(original[Self.Text.self] == "live")
+    }
 
-            #expect(values[CounterKey.self] == 999)
-            #expect(values[StringKey.self] == "test")
-        }
+    @Test
+    func `Copying values preserves an explicitly stored reference identity`() {
+        let client = Self.Client(42)
+        var original = Dependency.Values()
+        original[Self.Service.self] = client
+        var copy = original
 
-        @Test
-        func `isTestContext false returns liveValue`() {
-            var values = Dependency.Values()
-            values.isTestContext = false
+        #expect(copy[Self.Service.self] === client)
+        copy[Self.Service.self] = Self.Client(43)
 
-            #expect(values[CounterKey.self] == 0)
-            #expect(values[StringKey.self] == "live")
-        }
-
-        @Test
-        func `forTesting factory sets isTestContext`() {
-            let values = Dependency.Values.forTesting()
-
-            #expect(values[CounterKey.self] == 999)
-            #expect(values.isTestContext)
-        }
-
-        @Test
-        func `explicit value overrides test/live defaults`() {
-            var values = Dependency.Values.forTesting()
-            values[CounterKey.self] = 42
-
-            #expect(values[CounterKey.self] == 42)
-        }
-
-        @Test
-        func `testValue defaults to liveValue when not overridden`() {
-            var values = Dependency.Values.forTesting()
-
-            #expect(values[NoTestValueKey.self] == "default-live")
-        }
+        #expect(original[Self.Service.self] === client)
+        #expect(copy[Self.Service.self] !== client)
+        #expect(original[Self.Service.self].value == 42)
+        #expect(copy[Self.Service.self].value == 43)
     }
 }
