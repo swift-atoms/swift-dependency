@@ -4,24 +4,13 @@ import Testing
 extension Dependency {
     @Suite
     struct `Values preserve explicit overrides` {
-        enum Number: Dependency.Key {
-            static var liveValue: Int { 42 }
-            static var testValue: Int { 999 }
-        }
+        enum Number: Dependency.Key {}
 
-        enum Text: Dependency.Key {
-            static var liveValue: String { "live" }
-            static var testValue: String { "test" }
-        }
+        enum Text: Dependency.Key {}
 
-        enum OptionalNumber: Dependency.Key {
-            static var liveValue: Int? { 42 }
-            static var testValue: Int? { 999 }
-        }
+        enum OptionalNumber: Dependency.Key {}
 
-        enum Numbers: Dependency.Key {
-            static var liveValue: [Int] { [] }
-        }
+        enum Numbers: Dependency.Key {}
 
         final class Client: Sendable {
             let value: Int
@@ -33,6 +22,25 @@ extension Dependency {
             static var liveValue: Client { Client(0) }
         }
     }
+}
+
+extension Dependency.`Values preserve explicit overrides`.Number {
+    static var liveValue: Int { 42 }
+    static var testValue: Int { 999 }
+}
+
+extension Dependency.`Values preserve explicit overrides`.Text {
+    static var liveValue: String { "live" }
+    static var testValue: String { "test" }
+}
+
+extension Dependency.`Values preserve explicit overrides`.OptionalNumber {
+    static var liveValue: Int? { 42 }
+    static var testValue: Int? { 999 }
+}
+
+extension Dependency.`Values preserve explicit overrides`.Numbers {
+    static var liveValue: [Int] { [] }
 }
 
 extension Dependency.`Values preserve explicit overrides` {

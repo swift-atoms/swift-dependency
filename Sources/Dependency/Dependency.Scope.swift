@@ -21,7 +21,7 @@ extension Dependency.Scope {
 
 extension Dependency.Scope {
 
-    public static func with<T, E: Swift.Error>(
+    public static func with<T, E: Swift::Error>(
         _ modify: (inout Dependency.Values) -> Void,
         operation: () throws(E) -> T
     ) throws(E) -> T {
@@ -54,7 +54,7 @@ extension Dependency.Scope {
 extension Dependency.Scope {
 
     nonisolated(nonsending)
-        public static func with<T, E: Swift.Error>(
+        public static func with<T, E: Swift::Error>(
             _ modify: (inout Dependency.Values) -> Void,
             operation: nonisolated(nonsending) () async throws(E) -> T
         ) async throws(E) -> T

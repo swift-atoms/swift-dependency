@@ -4,23 +4,13 @@ import Testing
 extension Dependency {
     @Suite
     struct `Keys distinguish dependencies` {
-        enum First: Dependency.Key {
-            static var liveValue: Int { 1 }
-            static var testValue: Int { 101 }
-        }
+        enum First: Dependency.Key {}
 
-        enum Second: Dependency.Key {
-            static var liveValue: Int { 1 }
-            static var testValue: Int { 102 }
-        }
+        enum Second: Dependency.Key {}
 
-        enum Default: Dependency.Key {
-            static var liveValue: String { "default" }
-        }
+        enum Default: Dependency.Key {}
 
-        enum Aliased: __DependencyKey {
-            static var liveValue: String { "aliased" }
-        }
+        enum Aliased: __DependencyKey {}
 
         static func read<K: __DependencyKey>(_ key: K.Type, from values: Dependency.Values) -> K.Value
         where K.Value: Copyable & Escapable {
@@ -29,6 +19,24 @@ extension Dependency {
 
         static func acceptMarker<K: Witness.`Protocol`>(_: K.Type) {}
     }
+}
+
+extension Dependency.`Keys distinguish dependencies`.First {
+    static var liveValue: Int { 1 }
+    static var testValue: Int { 101 }
+}
+
+extension Dependency.`Keys distinguish dependencies`.Second {
+    static var liveValue: Int { 1 }
+    static var testValue: Int { 102 }
+}
+
+extension Dependency.`Keys distinguish dependencies`.Default {
+    static var liveValue: String { "default" }
+}
+
+extension Dependency.`Keys distinguish dependencies`.Aliased {
+    static var liveValue: String { "aliased" }
 }
 
 extension Dependency.`Keys distinguish dependencies` {

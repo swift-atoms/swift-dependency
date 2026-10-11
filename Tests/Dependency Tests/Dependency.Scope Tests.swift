@@ -4,17 +4,11 @@ import Testing
 extension Dependency {
     @Suite
     struct `Scopes isolate dependency bindings` {
-        enum Number: Dependency.Key {
-            static var liveValue: Int { 0 }
-            static var testValue: Int { 100 }
-        }
+        enum Number: Dependency.Key {}
 
-        enum Text: Dependency.Key {
-            static var liveValue: String { "live" }
-            static var testValue: String { "test" }
-        }
+        enum Text: Dependency.Key {}
 
-        enum Failure: Swift.Error, Equatable {
+        enum Failure: Swift::Error, Equatable {
             case refused(Int)
         }
 
@@ -31,17 +25,6 @@ extension Dependency {
 
             init(participants: Int) {
                 self.participants = participants
-            }
-
-            func arrive() async {
-                arrivals += 1
-                if arrivals == participants {
-                    let ready = waiters
-                    waiters.removeAll()
-                    for waiter in ready { waiter.resume() }
-                } else {
-                    await withCheckedContinuation { waiters.append($0) }
-                }
             }
         }
 
@@ -60,6 +43,29 @@ extension Dependency {
         }
 
         static let live = Snapshot(number: 0, text: "live", testing: false)
+    }
+}
+
+extension Dependency.`Scopes isolate dependency bindings`.Number {
+    static var liveValue: Int { 0 }
+    static var testValue: Int { 100 }
+}
+
+extension Dependency.`Scopes isolate dependency bindings`.Text {
+    static var liveValue: String { "live" }
+    static var testValue: String { "test" }
+}
+
+extension Dependency.`Scopes isolate dependency bindings`.Rendezvous {
+    func arrive() async {
+        arrivals += 1
+        if arrivals == participants {
+            let ready = waiters
+            waiters.removeAll()
+            for waiter in ready { waiter.resume() }
+        } else {
+            await withCheckedContinuation { waiters.append($0) }
+        }
     }
 }
 
