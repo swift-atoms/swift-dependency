@@ -148,7 +148,9 @@ extension Dependency.`Scopes isolate dependency bindings` {
                     values[Self.Number.self] = 2
                     values.isTestContext = true
                 } operation: { () throws(Self.Failure) -> Int in
-                    #expect(Self.snapshot() == Self.Snapshot(number: 2, text: "test", testing: true))
+                    #expect(
+                        Self.snapshot() == Self.Snapshot(number: 2, text: "test", testing: true)
+                    )
                     if fails { throw .refused(7) }
                     return 42
                 }
@@ -165,7 +167,9 @@ extension Dependency.`Scopes isolate dependency bindings` {
     }
 
     @Test(arguments: [false, true])
-    func `Asynchronous typed results and failures restore the parent after suspension`(_ fails: Bool) async {
+    func `Asynchronous typed results and failures restore the parent after suspension`(
+        _ fails: Bool
+    ) async {
         await Dependency.Scope.with { values in
             values[Self.Number.self] = 1
         } operation: {
@@ -176,7 +180,9 @@ extension Dependency.`Scopes isolate dependency bindings` {
                     values.isTestContext = true
                 } operation: { () async throws(Self.Failure) -> Int in
                     await Task.yield()
-                    #expect(Self.snapshot() == Self.Snapshot(number: 2, text: "test", testing: true))
+                    #expect(
+                        Self.snapshot() == Self.Snapshot(number: 2, text: "test", testing: true)
+                    )
                     if fails { throw .refused(7) }
                     return 42
                 }
@@ -233,7 +239,10 @@ extension Dependency.`Scopes isolate dependency bindings` {
             values[Self.Number.self] = 1000
             values[Self.Text.self] = "parent"
         } operation: {
-            let snapshots = await withTaskGroup(of: Self.Snapshot.self, returning: [Self.Snapshot].self) { group in
+            let snapshots = await withTaskGroup(
+                of: Self.Snapshot.self,
+                returning: [Self.Snapshot].self
+            ) { group in
                 for number in 1...8 {
                     group.addTask {
                         await Dependency.Scope.with { values in

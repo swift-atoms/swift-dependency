@@ -12,7 +12,10 @@ extension Dependency {
 
         enum Aliased: __DependencyKey {}
 
-        static func read<K: __DependencyKey>(_ key: K.Type, from values: Dependency.Values) -> K.Value
+        static func read<K: __DependencyKey>(
+            _ key: K.Type,
+            from values: Dependency.Values
+        ) -> K.Value
         where K.Value: Copyable & Escapable {
             values[key]
         }
