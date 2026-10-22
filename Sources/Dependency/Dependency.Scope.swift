@@ -1,3 +1,5 @@
+import _Concurrency
+
 extension Dependency {
 
     public struct Scope: Sendable {
