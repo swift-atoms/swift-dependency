@@ -38,3 +38,14 @@ extension Dependency.Values {
         return values
     }
 }
+
+extension Dependency.Values {
+
+    /// These values with `other`'s laid over them: a key set in both takes `other`'s value, and the context is
+    /// `other`'s.
+    public func merging(_ other: Self) -> Self {
+        var merged = other
+        merged.storage = storage.merging(other.storage) { _, theirs in theirs }
+        return merged
+    }
+}

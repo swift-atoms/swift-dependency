@@ -136,3 +136,24 @@ extension Dependency.`Values preserve explicit overrides` {
         #expect(copy[Self.Service.self].value == 43)
     }
 }
+
+extension Dependency.`Values preserve explicit overrides` {
+    @Test
+    func `Merging keeps the values only the receiver set and lets the other's win`() {
+        var base = Dependency.Values()
+        base[Number.self] = 1
+        base[Text.self] = "base"
+        var other = Dependency.Values()
+        other[Text.self] = "other"
+        let merged = base.merging(other)
+        #expect(merged[Number.self] == 1)
+        #expect(merged[Text.self] == "other")
+    }
+
+    @Test
+    func `Merging takes the other's context`() {
+        let merged = Dependency.Values().merging(.forTesting())
+        #expect(merged.isTestContext)
+        #expect(merged[Number.self] == 999)
+    }
+}
