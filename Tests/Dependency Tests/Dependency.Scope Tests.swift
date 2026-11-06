@@ -1,7 +1,7 @@
 import Dependency
 import Testing
 
-extension Dependency {
+extension `Dependency Tests` {
     @Suite
     struct `Scopes isolate dependency bindings` {
         enum Number: Dependency.Key {}
@@ -46,17 +46,17 @@ extension Dependency {
     }
 }
 
-extension Dependency.`Scopes isolate dependency bindings`.Number {
+extension `Dependency Tests`.`Scopes isolate dependency bindings`.Number {
     static var liveValue: Int { 0 }
     static var testValue: Int { 100 }
 }
 
-extension Dependency.`Scopes isolate dependency bindings`.Text {
+extension `Dependency Tests`.`Scopes isolate dependency bindings`.Text {
     static var liveValue: String { "live" }
     static var testValue: String { "test" }
 }
 
-extension Dependency.`Scopes isolate dependency bindings`.Rendezvous {
+extension `Dependency Tests`.`Scopes isolate dependency bindings`.Rendezvous {
     func arrive() async {
         arrivals += 1
         if arrivals == participants {
@@ -69,7 +69,7 @@ extension Dependency.`Scopes isolate dependency bindings`.Rendezvous {
     }
 }
 
-extension Dependency.`Scopes isolate dependency bindings` {
+extension `Dependency Tests`.`Scopes isolate dependency bindings` {
     @Test
     func `Candidate values remain separate until the operation starts`() {
         let result = Dependency.Scope.with { values in

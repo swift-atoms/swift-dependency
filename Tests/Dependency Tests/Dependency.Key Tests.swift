@@ -1,7 +1,9 @@
 import Dependency
 import Testing
 
-extension Dependency {
+enum `Dependency Tests` {}
+
+extension `Dependency Tests` {
     @Suite
     struct `Keys distinguish dependencies` {
         enum First: Dependency.Key {}
@@ -24,25 +26,25 @@ extension Dependency {
     }
 }
 
-extension Dependency.`Keys distinguish dependencies`.First {
+extension `Dependency Tests`.`Keys distinguish dependencies`.First {
     static var liveValue: Int { 1 }
     static var testValue: Int { 101 }
 }
 
-extension Dependency.`Keys distinguish dependencies`.Second {
+extension `Dependency Tests`.`Keys distinguish dependencies`.Second {
     static var liveValue: Int { 1 }
     static var testValue: Int { 102 }
 }
 
-extension Dependency.`Keys distinguish dependencies`.Default {
+extension `Dependency Tests`.`Keys distinguish dependencies`.Default {
     static var liveValue: String { "default" }
 }
 
-extension Dependency.`Keys distinguish dependencies`.Aliased {
+extension `Dependency Tests`.`Keys distinguish dependencies`.Aliased {
     static var liveValue: String { "aliased" }
 }
 
-extension Dependency.`Keys distinguish dependencies` {
+extension `Dependency Tests`.`Keys distinguish dependencies` {
     @Test
     func `Distinct keys with the same value type retain independent overrides`() {
         var values = Dependency.Values()

@@ -1,7 +1,7 @@
 import Dependency
 import Testing
 
-extension Dependency {
+extension `Dependency Tests` {
     @Suite
     struct `Values preserve explicit overrides` {
         enum Number: Dependency.Key {}
@@ -24,26 +24,26 @@ extension Dependency {
     }
 }
 
-extension Dependency.`Values preserve explicit overrides`.Number {
+extension `Dependency Tests`.`Values preserve explicit overrides`.Number {
     static var liveValue: Int { 42 }
     static var testValue: Int { 999 }
 }
 
-extension Dependency.`Values preserve explicit overrides`.Text {
+extension `Dependency Tests`.`Values preserve explicit overrides`.Text {
     static var liveValue: String { "live" }
     static var testValue: String { "test" }
 }
 
-extension Dependency.`Values preserve explicit overrides`.OptionalNumber {
+extension `Dependency Tests`.`Values preserve explicit overrides`.OptionalNumber {
     static var liveValue: Int? { 42 }
     static var testValue: Int? { 999 }
 }
 
-extension Dependency.`Values preserve explicit overrides`.Numbers {
+extension `Dependency Tests`.`Values preserve explicit overrides`.Numbers {
     static var liveValue: [Int] { [] }
 }
 
-extension Dependency.`Values preserve explicit overrides` {
+extension `Dependency Tests`.`Values preserve explicit overrides` {
     @Test
     func `Empty values use live defaults and the testing factory uses test defaults`() {
         let live = Dependency.Values()
@@ -137,7 +137,7 @@ extension Dependency.`Values preserve explicit overrides` {
     }
 }
 
-extension Dependency.`Values preserve explicit overrides` {
+extension `Dependency Tests`.`Values preserve explicit overrides` {
     @Test
     func `Merging keeps the values only the receiver set and lets the other's win`() {
         var base = Dependency.Values()
