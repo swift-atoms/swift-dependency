@@ -8,7 +8,7 @@ extension `Dependency Tests` {
 
         enum Text: Dependency.Key {}
 
-        enum OptionalNumber: Dependency.Key {}
+        fileprivate enum OptionalNumber: Dependency.Key {}
 
         enum Numbers: Dependency.Key {}
 
